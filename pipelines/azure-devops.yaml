@@ -34,9 +34,8 @@ jobs:
         condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
         displayName: 'Push an image'
         inputs:
-          repository: 'bestrong-webapisample'
+          repository: 'bestrongacrrestico/bestrong-webapisample'
           command: 'push'
-          Dockerfile: 'Dockerfile'
           tags: ${{ parameters.tag }}
           containerRegistry: bestrongacrrestico
 
