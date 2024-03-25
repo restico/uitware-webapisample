@@ -3,51 +3,48 @@ trigger: none
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  - group: bestrong-secrets
-
 parameters:
-  - name: image-tag
+  - name: tag
     displayName: 'Image tag'
     type: string
     default: 'latest'
 
 jobs:
-  job:
-  displayName: Container Build and Deploy
-  steps:
-    - checkout: self
-      displayName: Repository checkout
+  - job:
+    displayName: Container Build and Deploy
+    steps:
+      - checkout: self
+        displayName: Repository checkout
 
-    - task: DockerInstaller@0
-      displayName: 'Install Docker'
-      inputs:
-        dockerVersion: '26.0.0'
+      - task: DockerInstaller@0
+        displayName: 'Install Docker'
+        inputs:
+          dockerVersion: '26.0.0'
 
-    - task: Docker@2
-      displayName: 'Build an image'
-      inputs:
-        repository: 'bestrong-webapisample'
-        command: 'build'
-        buildContext: '.'
-        Dockerfile: 'Dockerfile'
-        tags: ${{ parameters.image-tag }}
+      - task: Docker@2
+        displayName: 'Build an image'
+        inputs:
+          repository: 'bestrong-webapisample'
+          command: 'build'
+          buildContext: '.'
+          Dockerfile: 'Dockerfile'
+          tags: ${{ parameters.tag }}
 
-    - task: Docker@2
-      condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-      displayName: 'Push an image'
-      inputs:
-        repository: 'bestrong-webapisample'
-        command: 'push'
-        Dockerfile: 'Dockerfile'
-        tags: ${{ parameters.image-tag }}
-        containerRegistry: bestrongacrrestico
+      - task: Docker@2
+        condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
+        displayName: 'Push an image'
+        inputs:
+          repository: 'bestrong-webapisample'
+          command: 'push'
+          Dockerfile: 'Dockerfile'
+          tags: ${{ parameters.tag }}
+          containerRegistry: bestrongacrrestico
 
-    - task: AzureWebAppContainer@1
-      condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-      displayName: 'Azure Web App on Container Deploy'
-      inputs:
-        azureSubscription: $(arm_subscription_id)
-        appName: web-app-bestrong-francecentral
-        containers: bestrongacrrestico/bestrong-webapisample:$(parameters.image-tag)
-    
+      - task: AzureWebAppContainer@1
+        condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
+        displayName: 'Azure Web App on Container Deploy'
+        inputs:
+          azureSubscription: bestrong-wif-connect
+          appName: web-app-bestrong-francecentral
+          containers: bestrongacrrestico/bestrong-webapisample:$(parameters.tag)
+      
