@@ -28,7 +28,7 @@ jobs:
           repository: 'bestrong-webapisample'
           command: 'buildAndPush'
           tags: ${{ parameters.tag }}
-          buildContext: '.'
+          buildContext: '$(Build.SourcesDirectory)/Dockerfile'
           containerRegistry: bestrongacrrestico
 
       - task: AzureWebAppContainer@1
