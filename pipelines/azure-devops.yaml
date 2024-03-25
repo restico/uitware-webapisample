@@ -22,21 +22,13 @@ jobs:
           dockerVersion: '26.0.0'
 
       - task: Docker@2
-        displayName: 'Build an image'
-        inputs:
-          repository: 'bestrong-webapisample'
-          command: 'build'
-          buildContext: '.'
-          Dockerfile: 'Dockerfile'
-          tags: ${{ parameters.tag }}
-
-      - task: Docker@2
         condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
         displayName: 'Push an image'
         inputs:
-          repository: 'bestrongacrrestico/bestrong-webapisample'
-          command: 'push'
+          repository: 'bestrong-webapisample'
+          command: 'buildAndPush'
           tags: ${{ parameters.tag }}
+          buildContext: '.'
           containerRegistry: bestrongacrrestico
 
       - task: AzureWebAppContainer@1
