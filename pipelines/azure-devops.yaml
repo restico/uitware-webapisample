@@ -37,20 +37,20 @@ jobs:
           Dockerfile: Dockerfile
           tags: ${{ parameters.tag }}
 
-      # - task: Docker@2
-      #   condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-      #   displayName: 'Push an image'
-      #   inputs:
-      #     command: 'push'
-      #     repository: '${{parameters.image}}'
-      #     tags: ${{ parameters.tag }}
-      #     containerRegistry: bestrongacrrestico
-
-      - task: AzureWebAppContainer@1
+      - task: Docker@2
         condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-        displayName: 'Azure Web App on Container Deploy'
+        displayName: 'Push an image'
         inputs:
-          azureSubscription: bestrong-wif-connect
-          appName: web-app-bestrong-francecentral
-          containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
+          command: 'push'
+          repository: '${{parameters.image}}'
+          tags: ${{ parameters.tag }}
+          containerRegistry: bestrongacrresticosc
+
+      # - task: AzureWebAppContainer@1
+      #   condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
+      #   displayName: 'Azure Web App on Container Deploy'
+      #   inputs:
+      #     azureSubscription: bestrong-wif-connect
+      #     appName: web-app-bestrong-francecentral
+      #     containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
       
