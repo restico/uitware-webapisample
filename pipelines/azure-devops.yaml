@@ -25,8 +25,7 @@ jobs:
         displayName: 'Build an image'
         inputs:
           command: 'build'
-          repository: 'bestrong-webapisample'
-          containerRegistry:  bestrongacrrestico.azurecr.io
+          repository: 'bestrongacrrestico.azurecr.io/bestrong-webapisample'
           Dockerfile: Dockerfile
           tags: ${{ parameters.tag }}
 
