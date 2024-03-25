@@ -26,6 +26,7 @@ jobs:
         inputs:
           command: 'build'
           repository: 'bestrong-webapisample'
+          containerRegistry:  bestrongacrrestico.azurecr.io
           Dockerfile: Dockerfile
           tags: ${{ parameters.tag }}
 
