@@ -20,13 +20,12 @@ jobs:
         displayName: 'Install Docker'
         inputs:
           dockerVersion: '26.0.0'
-      
-      - script: ls
-
+        
       - task: Docker@2
         displayName: 'Build an image'
         inputs:
           command: 'build'
+          repository: 'bestrong-webapisample'
           Dockerfile: Dockerfile
           tags: ${{ parameters.tag }}
 
