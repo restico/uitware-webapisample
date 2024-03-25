@@ -37,5 +37,5 @@ jobs:
         inputs:
           azureSubscription: bestrong-wif-connect
           appName: web-app-bestrong-francecentral
-          containers: bestrongacrrestico/bestrong-webapisample:${{parameters.tag}}
+          containers: bestrongacrrestico.azurecr.io/bestrong-webapisample:${{parameters.tag}}
       
