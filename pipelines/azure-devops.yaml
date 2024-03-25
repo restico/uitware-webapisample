@@ -20,15 +20,21 @@ jobs:
         displayName: 'Install Docker'
         inputs:
           dockerVersion: '26.0.0'
+      
+      - task: Docker@2
+        displayName: 'Build an image'
+        inputs:
+          command: 'build'
+          Dockerfile: $( Build.Repository.LocalPath )/Dockerfile
+          tags: ${{ parameters.tag }}
 
       - task: Docker@2
         condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
         displayName: 'Push an image'
         inputs:
+          command: 'push'
           repository: 'bestrong-webapisample'
-          command: 'buildAndPush'
           tags: ${{ parameters.tag }}
-          buildContext: '$(Build.SourcesDirectory)/Dockerfile'
           containerRegistry: bestrongacrrestico
 
       - task: AzureWebAppContainer@1
@@ -38,4 +44,5 @@ jobs:
           azureSubscription: bestrong-wif-connect
           appName: web-app-bestrong-francecentral
           containers: bestrongacrrestico.azurecr.io/bestrong-webapisample:${{parameters.tag}}
+          containerCommand: dotnet SampleWebApiAspNetCore.dll
       
