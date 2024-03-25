@@ -1,0 +1,7 @@
+services:
+  webapisample:
+    build:
+      context: .
+    container_name: webapisample
+    ports:
+      - "80:80"
