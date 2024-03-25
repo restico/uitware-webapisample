@@ -8,6 +8,14 @@ parameters:
     displayName: 'Image tag'
     type: string
     default: 'latest'
+  - name: image
+    displayName: "Image name"
+    type: string
+    default: bestrong-webapisample
+  - name: registry
+    displayName: "Registry URL"
+    type: string
+    default: bestrongacrrestico.azurecr.io
 
 jobs:
   - job:
@@ -25,18 +33,18 @@ jobs:
         displayName: 'Build an image'
         inputs:
           command: 'build'
-          repository: 'bestrongacrrestico.azurecr.io/bestrong-webapisample'
+          repository: '${{parameters.registry}}/${{parameters.image}}'
           Dockerfile: Dockerfile
           tags: ${{ parameters.tag }}
 
-      - task: Docker@2
-        condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-        displayName: 'Push an image'
-        inputs:
-          command: 'push'
-          repository: 'bestrong-webapisample'
-          tags: ${{ parameters.tag }}
-          containerRegistry: bestrongacrrestico
+      # - task: Docker@2
+      #   condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
+      #   displayName: 'Push an image'
+      #   inputs:
+      #     command: 'push'
+      #     repository: '${{parameters.image}}'
+      #     tags: ${{ parameters.tag }}
+      #     containerRegistry: bestrongacrrestico
 
       - task: AzureWebAppContainer@1
         condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
@@ -44,6 +52,5 @@ jobs:
         inputs:
           azureSubscription: bestrong-wif-connect
           appName: web-app-bestrong-francecentral
-          containers: bestrongacrrestico.azurecr.io/bestrong-webapisample:${{parameters.tag}}
-          containerCommand: dotnet SampleWebApiAspNetCore.dll
+          containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
       
