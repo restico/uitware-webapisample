@@ -1,5 +1,8 @@
 trigger: none
 
+pr:
+  - main
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -16,6 +19,13 @@ parameters:
     displayName: "Registry URL"
     type: string
     default: bestrongacrrestico.azurecr.io
+  - name: deploy
+    displayName: "Deploy to Azure Web App"
+    type: boolean
+    default: true
+    values:
+      - true
+      - false
 
 jobs:
   - job:
@@ -38,7 +48,7 @@ jobs:
           tags: ${{ parameters.tag }}
 
       - task: Docker@2
-        condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
+        condition: eq(${{parameters.deploy}}, True)
         displayName: 'Push an image'
         inputs:
           command: 'push'
@@ -46,11 +56,11 @@ jobs:
           tags: ${{ parameters.tag }}
           containerRegistry: bestrongacrresticosc
 
-      # - task: AzureWebAppContainer@1
-      #   condition: or(eq(variables['Build.Reason'], 'BatchedCI'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual'))
-      #   displayName: 'Azure Web App on Container Deploy'
-      #   inputs:
-      #     azureSubscription: bestrong-wif-connect
-      #     appName: web-app-bestrong-francecentral
-      #     containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
+      - task: AzureWebAppContainer@1
+        condition: 'eq(${{parameters.deploy}}, True)'
+        displayName: 'Azure Web App on Container Deploy'
+        inputs:
+          azureSubscription: bestrong-wif-connect
+          appName: bestrong-webapp-francecentral
+          containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
       
