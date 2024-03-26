@@ -26,6 +26,10 @@ parameters:
     values:
       - true
       - false
+  - name: appName
+    displayName: "App Service Name"
+    type: string
+    default: bestrong-webapp-francecentral
 
 jobs:
   - job:
@@ -61,6 +65,6 @@ jobs:
         displayName: 'Azure Web App on Container Deploy'
         inputs:
           azureSubscription: bestrong-wif-connect
-          appName: bestrong-webapp-francecentral
+          appName: ${{parameters.appName}}
           containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
       
