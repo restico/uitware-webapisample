@@ -60,11 +60,19 @@ jobs:
           tags: ${{ parameters.tag }}
           containerRegistry: bestrongacrresticosc
 
-      - task: AzureWebAppContainer@1
-        condition: 'eq(${{parameters.deploy}}, True)'
-        displayName: 'Azure Web App on Container Deploy'
+      # - task: AzureWebAppContainer@1
+      #   condition: 'eq(${{parameters.deploy}}, True)'
+      #   displayName: 'Azure Web App on Container Deploy'
+      #   inputs:
+      #     azureSubscription: bestrong-wif-connect
+      #     appName: ${{parameters.appName}}
+      #     containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
+      - task: AzureRmWebAppDeployment@4
         inputs:
-          azureSubscription: bestrong-wif-connect
-          appName: ${{parameters.appName}}
-          containers: ${{parameters.registry}}/${{parameters.image}}:${{parameters.tag}}
-      
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Azure for Students(33ba0060-83da-478f-a571-bc007ed77cab)'
+          appType: 'webAppContainer'
+          WebAppName: 'bestrong-webapp-francecentral'
+          DockerNamespace: 'bestrongacrrestico.azurecr.io'
+          DockerRepository: 'bestrong-webapisample'
+          DockerImageTag: 'latest'
